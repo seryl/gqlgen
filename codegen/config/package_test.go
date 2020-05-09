@@ -40,6 +40,22 @@ func TestPackageConfig(t *testing.T) {
 		require.Contains(t, filepath.ToSlash(p.Dir()), "codegen/config/testdata")
 	})
 
+	t.Run("when given both with a static import path", func(t *testing.T) {
+		p := PackageConfig{Filename: "testdata/example.go", Package: "wololo", StaticImportPath: "github.com/99designs/gqlgen/codegen/config/testdata"}
+		require.True(t, p.IsDefined())
+
+		require.NoError(t, p.Check())
+
+		require.Equal(t, p.Package, "wololo")
+		require.Equal(t, "github.com/99designs/gqlgen/codegen/config/testdata", p.ImportPath())
+
+		require.Equal(t, "wololo", p.Pkg().Name())
+		require.Equal(t, "github.com/99designs/gqlgen/codegen/config/testdata", p.Pkg().Path())
+
+		require.Contains(t, filepath.ToSlash(p.Filename), "codegen/config/testdata/example.go")
+		require.Contains(t, filepath.ToSlash(p.Dir()), "codegen/config/testdata")
+	})
+
 	t.Run("when given nothing", func(t *testing.T) {
 		p := PackageConfig{}
 		require.False(t, p.IsDefined())

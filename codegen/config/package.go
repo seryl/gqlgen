@@ -10,13 +10,17 @@ import (
 )
 
 type PackageConfig struct {
-	Filename string `yaml:"filename,omitempty"`
-	Package  string `yaml:"package,omitempty"`
+	Filename         string `yaml:"filename,omitempty"`
+	Package          string `yaml:"package,omitempty"`
+	StaticImportPath string `yaml:"importpath,omitempty"`
 }
 
 func (c *PackageConfig) ImportPath() string {
 	if !c.IsDefined() {
 		return ""
+	}
+	if c.StaticImportPath != "" {
+		return c.StaticImportPath
 	}
 	return code.ImportPathForDir(c.Dir())
 }
